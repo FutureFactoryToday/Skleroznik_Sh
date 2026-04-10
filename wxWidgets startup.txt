@@ -1,0 +1,46 @@
+1) sudo apt update - обновляем список пакетов
+2) sudo apt install build-essential cmake - устанавливаем инструменты сборки и cmake
+3) sudo apt install libwxgtk3.2-dev libgtk-3-dev - утстанавливаем библиотеки wxWidgets и GTK из состава дистрибутива Linux
+4) mkdir projects - создаём папку "projects"
+5) cd projects/ - переходим в папку "projects"
+6) mkdir project_name - создаём папку с именем проекта
+7) cd project_name - переходим в папку с именем проекта
+8) sudo apt vim install - устанавливаем vim
+9) Создаём необходимые файлы проекта, включая минимальный файл командой vim main.cpp (остальные файлы проекта создаются либо аналогичным образом, либо через другой текстовый редактор):
+		#include <wx/wx.h>
+
+		class MyApp : public wxApp {
+		public:
+		    virtual bool OnInit() {
+		        wxFrame *frame = new wxFrame(NULL, wxID_ANY, "Hello wxWidgets");
+		        frame->Show(true);
+		        return true;
+		    }
+		};
+
+		wxIMPLEMENT_APP(MyApp);
+
+10) Создаём CMakeLists.txt командой vim CMakeLists.txt
+		cmake_minimum_required(VERSION 3.10)
+		project(MyWxProject)
+
+		# Указываем стандарт C++
+		set(CMAKE_CXX_STANDARD 17)
+		set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+		# Поиск wxWidgets (требуются базовые компоненты и библиотека core)
+		find_package(wxWidgets REQUIRED core base)
+
+		# Подключаем конфигурационный файл wxWidgets
+		include(${wxWidgets_USE_FILE})
+
+		# Создаем исполняемый файл
+		add_executable(${PROJECT_NAME} main.cpp)
+
+		# Связываем проект с библиотеками wxWidgets
+		target_link_libraries(${PROJECT_NAME} ${wxWidgets_LIBRARIES})
+11) mkdir build && cd build - Создаём и переходим в папку для сборки
+12) cmake .. - Генерируем файлы сборки
+13) make - компилируем
+14) ./ProjectName - Запускаем
+15) cmake .. && make && ./ProjectName
