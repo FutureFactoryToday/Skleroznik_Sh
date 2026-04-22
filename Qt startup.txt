@@ -1,0 +1,17 @@
+# 1. Обновите списки пакетов
+	sudo apt update
+
+# 2. Установите инструменты сборки и компилятор
+	sudo apt install -y build-essential cmake mesa-common-dev libglu1-mesa-dev
+
+# 3. Установите среду разработки Qt Creator
+	sudo apt install -y qtcreator
+
+# 4. Установите библиотеки Qt (Qt6 или Qt5)
+# Для современной разработки (Qt6):
+	sudo apt install -y qt6-base-dev qt6-declarative-dev
+# Или для более старых проектов (Qt5):
+# sudo apt install -y qtbase5-dev qtdeclarative5-dev
+
+# Установка базовой документации
+	sudo apt install -y qt6-base-doc qt6-base-doc-html
