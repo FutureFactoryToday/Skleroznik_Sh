@@ -1,0 +1,207 @@
+Эта инструкция предназначена для сборки окружения для разработки desktop UI приложения с использованием electron.
+
+	#1) Обновляем списки пакетов и ставим curl:
+
+		sudo apt update
+		sudo apt install -y curl
+
+	#2) Скачиваем скрипт установки Node.js 20 (LTS версия):
+
+		curl -fsSL https://nodesource.com | sudo -E bash -
+
+	#3) Устанавливаем Node.js:
+
+		sudo apt install nodejs
+
+	#4) Принудительно обновляем Node.js:
+
+		sudo npm install -g		(Устанавливаем менеджер версий n через ваш текущий npm) 
+		sudo n stable			(Принудительно скачиваем и переключаемся на последнюю стабильную версию Node.js)
+		hash -r					(Обновляем пути (чтобы система увидела новую версию))
+
+	#5) Устанавливаем npm:
+
+		sudo apt install npm
+
+	#6) Проверяем версии:
+
+		node -v 
+		npm -v
+
+	#7) Создаем папку в проектной директории и переходим  в неё:
+		
+		mkdir my-electron-app
+		cd my-electron-app
+
+	#8) Инициализируем проект
+		
+		npm init -y
+
+		# В результате выполнения это йкоманды появится файл "package.json"
+		# С таким содержанием:
+		# 
+		#	{
+		#	  "name": "название_вашей_папки",
+		#	  "version": "1.0.0",
+		#	  "description": "",
+		#	  "main": "index.js",
+		#	  "scripts": {
+		#	    "test": "echo \"Error: no test specified\" && exit 1"
+		#	  },
+		#	  "keywords": [],
+		#	  "author": "",
+		#	  "license": "ISC"
+		#	}
+		#
+		# index.js - это файл JavaScript, имя которого должно соответствовать созданному файлу .js
+		# В нашем случае это будет main.js, поэтому исправляем сразу index.js на main.js
+
+	#9) Устанавливаем electron
+
+		npm install electron --save-dev
+
+	#10) Создаём первые необходжимые "helloworld"-файлы:
+
+		touch main.js
+		touch index.html 
+		touch style.css
+
+		#или одной командой
+
+		touch main.js index.html style.css
+
+	#11) Открываем в любом редакторе файл main.js и пишем туда следующий код:
+
+		#	const { app, BrowserWindow } = require('electron');
+		#
+		#	function createWindow() {
+  		#		const win = new BrowserWindow({ width: 800, height: 600 });
+  		#		win.loadFile('index.html');
+		#	}
+		#
+		#	app.whenReady().then(createWindow);
+
+	#12) Подгтавливаем запуск, открываем package.json и меняем:
+
+		"test": "echo \"Error: no test specified\" && exit 1"		на		"start": "electron ."
+
+	#13) Исправляем права доступа:
+
+		sudo chown root:root ./node_modules/electron/dist/chrome-sandbox
+		sudo chmod 4755 ./node_modules/electron/dist/chrome-sandbox
+
+	#14) Для работы в виртуальной машине, при использовании css необходимо отключить GPU:
+
+		npm start -- --no-sandbox --disable-gpu --disable-software-rasterizer
+
+		# или поправить файл package.json
+			#	"scripts": {
+  			#		"start": "electron . --no-sandbox --disable-gpu"
+			#	}
+
+	#15) Делаем запуск:
+
+		npm start
+
+	#16) Делаем исполняемый файл:
+
+		npm install --save-dev @electron-forge/cli
+		npx electron-forge import
+
+	#17) Утанавливаем утилиту rpm:
+
+		sudo apt update
+		sudo apt install rpm
+
+	#18) Собираем:
+
+		npm run make
+
+
+	#########################
+	#####	По дефолту	#####
+	#########################
+
+	1) Зайдите в папку проекта, там появилась папка out.
+	2) Внутри нее найдите папку my-electron-app-linux-x64 (или с похожим названием).
+	3) Там лежит файл my-electron-app — это и есть ваша готовая программа.
+	4) Кликните по нему правой кнопкой -> Свойства -> Разрешения -> Разрешить выполнение. Запускайте!
+
+
+	#############################################
+	#####	Если настроить в нужную папку	#####
+	#############################################
+
+	1) Откройте package.json.
+		В разделе "scripts" измените команду package или добавьте новую (например, build):
+
+		"scripts": {
+  			"start": "electron . --no-sandbox",
+  			"make": "electron-forge make",
+  			"build": "electron-forge package && cp out/my-electron-app-linux-x64/my-electron-app ./my-app-binary && chmod +x ./my-app-binary"
+		}
+
+		Что делает эта команда:
+			electron-forge package — собирает приложение.
+			cp ... ./my-app-binary — копирует исполняемый файл в текущую папку под именем my-app-binary.
+			chmod +x — сразу делает его исполняемым.
+
+	2) Выполняем:
+
+		npm run build
+
+	3) Переходим в папку:
+
+		cd out/my-electron-app-linux-x64/
+
+	4) Даём права на запуск:
+
+		chmod +x my-electron-app
+
+	5) Запускаем (с флагами безопасности и графики если работаем в виртуальной машине):
+
+		./my-electron-app --no-sandbox --disable-gpu
+
+
+	#################################################
+	#####	Как собрать в один файл .AppImager	#####
+	#################################################
+
+	1) Устанавливаем систему сборки AppImage:
+
+		npm install --save-dev @reforged/maker-appimage
+
+	2) Прописываем в файл forge.config.js в makers:
+
+		makers: [
+    		{
+      			name: '@reforged/maker-appimage',
+      			config: {},
+    		},
+
+    3) Проверяем, что прописаны в package.json:
+
+    	"description": "Мое первое Metro приложение на Electron",
+  		"author": "Alex",
+
+  	4) Выполняем сборку:
+
+  		npm run make
+
+
+  	5) После завершения сборки в папке out/make/ появится файл с расширением .AppImage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
