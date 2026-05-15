@@ -3,7 +3,7 @@
 	#1) Обновляем списки пакетов и ставим curl:
 
 		sudo apt update
-		sudo apt install -y curl
+		sudo apt install -y npm curl
 
 	#2) Скачиваем скрипт установки Node.js 20 (LTS версия):
 
