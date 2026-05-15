@@ -19,23 +19,21 @@
 		sudo n stable			(Принудительно скачиваем и переключаемся на последнюю стабильную версию Node.js)
 		hash -r					(Обновляем пути (чтобы система увидела новую версию))
 
-	#5) Устанавливаем npm:
-
-		sudo apt install npm
-
-	#6) Проверяем версии:
+	#5) Проверяем версии:
 
 		node -v 
 		npm -v
 
-	#7) Создаем папку в проектной директории и переходим  в неё:
+	#6) Создаем папку в проектной директории и переходим  в неё:
 		
 		mkdir my-electron-app
 		cd my-electron-app
 
-	#8) Инициализируем проект
+	#7) Инициализируем проект
 		
 		npm init -y
+
+		Далее появляется меню в котором можно сразу заполнить структуру следующего файла в соответствии с вашими требованиями
 
 		# В результате выполнения это йкоманды появится файл "package.json"
 		# С таким содержанием:
@@ -56,11 +54,11 @@
 		# index.js - это файл JavaScript, имя которого должно соответствовать созданному файлу .js
 		# В нашем случае это будет main.js, поэтому исправляем сразу index.js на main.js
 
-	#9) Устанавливаем electron
+	#8) Устанавливаем electron
 
 		npm install electron --save-dev
 
-	#10) Создаём первые необходжимые "helloworld"-файлы:
+	#9) Создаём первые необходжимые "helloworld"-файлы:
 
 		touch main.js
 		touch index.html 
@@ -70,7 +68,7 @@
 
 		touch main.js index.html style.css
 
-	#11) Открываем в любом редакторе файл main.js и пишем туда следующий код:
+	#10) Открываем в любом редакторе файл main.js и пишем туда следующий код:
 
 		#	const { app, BrowserWindow } = require('electron');
 		#
@@ -81,16 +79,16 @@
 		#
 		#	app.whenReady().then(createWindow);
 
-	#12) Подгтавливаем запуск, открываем package.json и меняем:
+	#11) Подгтавливаем запуск, открываем package.json и меняем:
 
 		"test": "echo \"Error: no test specified\" && exit 1"		на		"start": "electron ."
 
-	#13) Исправляем права доступа:
+	#12) Исправляем права доступа:
 
 		sudo chown root:root ./node_modules/electron/dist/chrome-sandbox
 		sudo chmod 4755 ./node_modules/electron/dist/chrome-sandbox
 
-	#14) Для работы в виртуальной машине, при использовании css необходимо отключить GPU:
+	#13) Для работы в виртуальной машине, при использовании css необходимо отключить GPU:
 
 		npm start -- --no-sandbox --disable-gpu --disable-software-rasterizer
 
@@ -99,21 +97,21 @@
   			#		"start": "electron . --no-sandbox --disable-gpu"
 			#	}
 
-	#15) Делаем запуск:
+	#14) Делаем запуск:
 
 		npm start
 
-	#16) Делаем исполняемый файл:
+	#15) Делаем исполняемый файл:
 
 		npm install --save-dev @electron-forge/cli
 		npx electron-forge import
 
-	#17) Утанавливаем утилиту rpm:
+	#16) Утанавливаем утилиту rpm:
 
 		sudo apt update
 		sudo apt install rpm
 
-	#18) Собираем:
+	#17) Собираем:
 
 		npm run make
 
