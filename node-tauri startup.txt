@@ -13,7 +13,15 @@
 
 2. Установка Rust (через Snap — самый надежный путь для Linux. Как мы выяснили, стандартный apt дает слишком старую версию. Используем Snap для получения актуального компилятора)
 
+    sudo apt install snap -y        #пробуем установить snap, если после этого "sudo snap install rustup --classic" не даёт результата делаем "sudo apt remove snap -y"
+
+    # устанавливаем через snapd
+    sudo apt update
+    sudo apt install snapd -y
+
     sudo snap install rustup --classic
+
+    #для 
     rustup default stable
     
     # Создаем ссылки, чтобы система всегда видела Rust
