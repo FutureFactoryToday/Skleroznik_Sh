@@ -1,0 +1,249 @@
+Инструкция по зеркалированию репозитория на несколько платформ.
+
+Часть 1. Подготовка к зеркалированию.
+
+	1. Создайте пустые репозитории на целевых платформах
+		
+		Платформа		Действие
+		GitHub			Зайдите на github.com → New repository → Создайте пустой репозиторий (без README, .gitignore, лицензии)
+		GitVerse		Зайдите на gitverse.ru → Создать репозиторий → Создайте пустой репозиторий
+		GitFlic			Зайдите на gitflic.ru → Создать проект → Создайте пустой репозиторий
+		
+		Важно: Репозитории должны быть абсолютно пустыми — без файлов, без веток, без коммитов. Иначе пуш с историей будет отклонен.
+
+	2. Получите URL-адреса созданных репозиториев
+
+		Скопируйте URL для каждого репозитория (формат HTTPS):
+
+			GitHub:   https://github.com/<username>/<repository>.git
+			GitVerse: https://gitverse.ru/<username>/<repository>.git
+			GitFlic:  https://gitflic.ru/<username>/<repository>.git
+
+		Совет: URL можно скопировать из адресной строки браузера или со страницы репозитория (кнопка "Clone").
+
+	3. Создайте отдельную папку для зеркалирования
+
+		mkdir ~/mirror-temp
+		cd ~/mirror-temp
+
+		Пояснение: Зеркалирование выполняется в отдельной пустой папке, чтобы не засорять основной проект и избежать случайного коммита зеркальных файлов.
+
+
+Часть 2. Зеркальное клонирование исходного репозитория
+
+	4. Выполните зеркальное клонирование исходного репозитория
+
+		git clone --mirror <URL_ИСХОДНОГО_РЕПОЗИТОРИЯ>
+
+		Пример:
+
+		git clone --mirror https://gitea.example.com/username/myproject.git
+
+		Пояснение: --mirror создает точную копию репозитория со ВСЕЙ историей: все ветки, все теги, все удаленные ветки, все ссылки
+		Будет создана папка с именем репозитория и расширением .git (например, myproject.git)
+
+
+	5. Перейдите в папку зеркального репозитория
+
+		cd <имя_репозитория>.git
+
+		Пример:
+
+		cd myproject.git
+		
+		Пояснение: Все дальнейшие команды выполняются внутри папки зеркала.
+
+	6. Проверьте текущие удаленные репозитории
+
+		git remote -v
+
+		Пояснение: Должен отобразиться только исходный URL (например, Gitea). Это нужно для контроля.
+
+Часть 3. Настройка множественного пуша
+
+	7. Добавьте URL для пуша на GitHub
+	
+		git remote set-url --add --push origin <URL_GITHUB>
+
+		Пример:
+
+		git remote set-url --add --push origin https://github.com/username/myproject.git
+
+		Пояснение:
+
+		--add --push добавляет URL только для отправки (push), не изменяя URL для получения (fetch)
+		Origin остается привязан к исходному репозиторию для fetch
+
+	8. Добавьте URL для пуша на GitVerse
+
+		git remote set-url --add --push origin <URL_GITVERSE>
+
+		Пример:
+
+		git remote set-url --add --push origin https://gitverse.ru/username/myproject.git
+
+	9. Добавьте URL для пуша на GitFlic
+
+		git remote set-url --add --push origin <URL_GITFLIC>
+
+		Пример:
+
+		git remote set-url --add --push origin https://gitflic.ru/username/myproject.git
+
+	10. Проверьте настройки удаленных репозиториев
+
+		git remote -v
+
+		Ожидаемый вывод:
+
+		origin  https://gitea.example.com/username/myproject.git (fetch)
+		origin  https://gitea.example.com/username/myproject.git (push)
+		origin  https://github.com/username/myproject.git (push)
+		origin  https://gitverse.ru/username/myproject.git (push)
+		origin  https://gitflic.ru/username/myproject.git (push)
+		
+		Пояснение: Fetch идет только с одного URL (исходного), а push — на все четыре.
+
+Часть 4. Отправка репозитория
+
+	11. Выполните зеркальный пуш
+
+		git push --mirror
+
+		Пояснение:
+
+		--mirror отправляет ВСЕ ссылки: все ветки, все теги, все удаленные ветки
+		Репозиторий будет полностью синхронизирован с исходным
+		Пуш выполняется одновременно на все добавленные URL
+
+	12. Проверьте результат в браузере
+
+		Откройте каждый репозиторий на всех платформах:
+	
+		https://github.com/<username>/<repository>
+		https://gitverse.ru/<username>/<repository>
+		https://gitflic.ru/<username>/<repository>
+
+		Пояснение: Убедитесь, что:
+
+		Все ветки присутствуют
+		Все теги отображаются
+		Все коммиты на месте
+		История коммитов полная
+
+Часть 5. Завершение зеркалирования
+
+	13. Выйдите из папки зеркала
+
+		cd ~
+
+	14. Удалите временную папку с зеркалом (опционально)
+
+		rm -rf ~/mirror-temp
+
+		Пояснение: После успешного зеркалирования временная папка больше не нужна. Ее можно удалить для экономии места.
+
+Часть 6. Настройка рабочего клона
+
+	15. Клонируйте репозиторий с любой платформы для работы
+
+		git clone <URL_ЛЮБОЙ_ПЛАТФОРМЫ> <папка_проекта>
+
+		Пример (клонируем с GitHub):
+
+		git clone https://github.com/username/myproject.git my-project
+		cd my-project
+
+		Пояснение: Для дальнейшей работы можно клонировать репозиторий с любой из платформ. Все они теперь идентичны.
+
+	16. Настройте множественный push в рабочем клоне
+
+		git remote set-url --add origin https://github.com/username/myproject.git
+		git remote set-url --add origin https://gitverse.ru/username/myproject.git
+		git remote set-url --add origin https://gitflic.ru/username/myproject.git
+
+		Пояснение: Теперь каждый git push будет отправлять изменения на все три платформы одновременно.
+
+	17. Проверьте настройки в рабочем клоне
+
+		git remote -v
+
+		Ожидаемый вывод:
+
+		origin  https://github.com/username/myproject.git (fetch)
+		origin  https://github.com/username/myproject.git (push)
+		origin  https://gitverse.ru/username/myproject.git (push)
+		origin  https://gitflic.ru/username/myproject.git (push)
+
+Часть 7. Решение типовых проблем
+	
+	##Проблема: "repository not found"
+	Причина: Репозиторий на платформе не создан или URL указан неверно.
+
+	Решение:
+
+		Создайте пустой репозиторий на нужной платформе
+		Скопируйте правильный URL
+		Удалите неправильный URL:
+
+
+		git remote set-url --delete --push origin <НЕПРАВИЛЬНЫЙ_URL>
+
+		Добавьте правильный URL:
+
+		git remote set-url --add --push origin <ПРАВИЛЬНЫЙ_URL>
+
+		Повторите пуш:
+
+		git push --mirror
+
+	##Проблема: "remote contains work that you do not have"
+	Причина: На целевой платформе уже есть коммиты (например, создан README).
+
+	Решение:
+
+		Удалите репозиторий на платформе
+		Создайте новый пустой репозиторий
+		Повторите пуш
+
+	##Проблема: "failed to push some refs"
+	Причина: Несовместимость политик веток или защиты.
+
+	Решение:
+
+		Проверьте, что на целевой платформе нет защищенных веток (protected branches)
+		Временно отключите защиту веток
+		Выполните пуш повторно
+		Включите защиту обратно
+
+	##Проблема: слишком большой репозиторий
+	Решение:
+
+		# Увеличить буфер HTTP
+
+		# Повторить пуш
+		git push --mirror
+
+
+
+Наслаждайся!
+Теперь ваш репозиторий полностью зеркалирован на все платформы. При каждом git push изменения будут отправляться одновременно на GitHub, GitVerse и GitFlic.
+
+
+
+
+Сводная таблица всех команд:
+
+№	Команда											Пояснение
+
+3	mkdir ~/mirror-temp && cd ~/mirror-temp			Создать временную папку
+4	git clone --mirror <URL>						Зеркально склонировать исходный репозиторий
+5	cd <repo>.git									Перейти в папку зеркала
+7	git remote set-url --add --push origin <URL1>	Добавить URL для пуша (GitHub)
+8	git remote set-url --add --push origin <URL2>	Добавить URL для пуша (GitVerse)
+9	git remote set-url --add --push origin <URL3>	Добавить URL для пуша (GitFlic)
+10	git remote -v									Проверить настройки
+11	git push --mirror								Отправить всё на все платформы
+14	rm -rf ~/mirror-temp							Удалить временную папку
+15	git clone <URL> <project>						Клонировать для работы
+16	git remote set-url --add origin <URL>			Настроить множественный push в рабочем клоне

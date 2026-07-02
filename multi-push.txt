@@ -1,0 +1,95 @@
+Универсальная инструкция: миграция с Gitea на GitHub + GitVerse + GitFlic
+Gitea выбран в качестве основного для примера. Основным можно сделать любой ресурс.
+
+1. Перейдите в папку проекта
+
+	cd <ПУТЬ_К_ПАПКЕ_ПРОЕКТА>
+
+2. Проверьте текущий remote
+
+	git remote -v (должен показывать URL вашего текущего репозитория (Gitea))
+
+3. Настройте одновременный push на все платформы
+
+	git remote set-url --add origin <URL_GITHUB>
+	git remote set-url --add origin <URL_GITVERSE>
+	git remote set-url --add origin <URL_GITFLIC>
+	
+	Где взять URL:
+
+	GitHub: https://github.com/<username>/<repository>
+	GitVerse: https://gitverse.ru/<username>/<repository>
+	GitFlic: https://gitflic.ru/<username>/<repository> (или скопируйте из адресной строки)
+
+4. Проверьте настройки
+
+	git remote -v
+	
+	Ожидаемый вывод:
+
+	origin  <URL_GITEA> (fetch)
+	origin  <URL_GITEA> (push)
+	origin  <URL_GITHUB> (push)
+	origin  <URL_GITVERSE> (push)
+	origin  <URL_GITFLIC> (push)
+
+5. Отправьте все ветки и теги
+
+	git push --all
+	git push --tags	(при необходимости)
+
+6. Проверьте результат
+	
+	Откройте каждый репозиторий в браузере и убедитесь, что все ветки и теги отобразились.
+
+7. Дальнейшая работа
+
+	git pull	Тянет изменения только с первого URL (Gitea)
+	git push	Пушит на все добавленные URL одновременно
+	git push origin <ветка>	Пушит указанную ветку на все добавленные URL
+	git push --all	Пушит все ветки на все добавленные URL
+
+8. Если ошибка "repository not found"
+
+	Создайте репозиторий на нужной платформе (пустой, без README)
+	Скопируйте правильный URL
+
+	Удалите неправильный:
+
+		git remote set-url --delete origin <НЕПРАВИЛЬНЫЙ_URL>
+
+	Добавьте правильный:
+
+		git remote set-url --add origin <ПРАВИЛЬНЫЙ_URL>
+
+	Повторите пуш:
+
+		git push --all
+		git push --tags
+
+9. Если нужно изменить fetch URL (с какой платформы тянуть)
+
+	git remote set-url origin <НОВЫЙ_FETCH_URL>
+
+10. Полная очистка и настройка с нуля
+
+	Если нужно пересоздать все настройки:
+
+	# Удалить origin
+
+		git remote remove origin
+
+	# Добавить заново
+
+		git remote add origin <ОСНОВНОЙ_URL>   # сюда будет тянуть
+
+	# Добавить push URL
+
+		git remote set-url --add origin <URL1>
+		git remote set-url --add origin <URL2>
+		git remote set-url --add origin <URL3>
+
+
+
+Наслаждайся!
+Теперь при каждом git push код отправляется одновременно на все настроенные платформы.
