@@ -69,6 +69,39 @@
 	npm run tauri build		- исполняемый файл будет лежать project-name/target/release/bundle/msi/
 
 
+При необходимости доустановить плагин для работы с файловой системой: npm install @tauri-apps/plugin-fs.
+
+Необходимые доработки в проекте:
+
+	В src-tauri/Cargo.toml добавьте:
+
+
+		[dependencies]
+		tauri-plugin-fs = "2"
+
+	В src-tauri/src/lib.rs (или main.rs) — зарегистрируйте плагин:
+
+
+		tauri::Builder::default()
+		    .plugin(tauri_plugin_fs::init())
+		    // ... остальные плагины
+
+	В src-tauri/capabilities/default.json разрешите доступ к AppConfig:
+
+
+		{
+		  "permissions": [
+		    "fs:allow-read-text-file",
+		    "fs:allow-write-text-file",
+		    "fs:allow-exists",
+		    {
+		      "identifier": "fs:scope",
+		      "allow": [{ "path": "$APPCONFIG/**" }]
+		    }
+		  ]
+		}
+
+
 ################################################################
 #############		c++ + make 		################
 ################################################################
