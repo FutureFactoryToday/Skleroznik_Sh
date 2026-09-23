@@ -69,7 +69,7 @@
 	npm run tauri build		- исполняемый файл будет лежать project-name/target/release/bundle/msi/
 
 
-При необходимости доустановить плагин для работы с файловой системой: npm install @tauri-apps/plugin-fs.
+При необходимости доустановить плагин для работы с файловой системой: npm install @tauri-apps/plugin-fs
 
 Необходимые доработки в проекте:
 
